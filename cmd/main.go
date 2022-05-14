@@ -45,7 +45,7 @@ func main() {
 	srv := new(code_sharing_platform.Server)
 	go func() {
 		if err := srv.Run(viper.GetString("app.port"), handlers.InitRoutes()); err != nil {
-			logrus.Fatalf("Error ocured while running http server: %s", err.Error())
+			logrus.Fatalf("Error occurred while running http server: %s", err.Error())
 		}
 	}()
 
@@ -58,7 +58,7 @@ func main() {
 	logrus.Println("App shutting down ...")
 
 	if err := srv.Shutdown(context.Background()); err != nil {
-		logrus.Errorf("Error ocured on server shutting down: %s", err.Error())
+		logrus.Errorf("Error occurred on server shutting down: %s", err.Error())
 	}
 }
 

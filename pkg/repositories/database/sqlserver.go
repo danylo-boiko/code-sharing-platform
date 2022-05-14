@@ -1,18 +1,10 @@
 package database
 
 import (
+	"code-sharing-platform/pkg/models"
 	"fmt"
 	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
-)
-
-const (
-	usersTable              = "users"
-	usersRolesTable         = "users_roles"
-	rolesTable              = "roles"
-	rolesClaimsTable        = "roles_claims"
-	coleSnippetsTable       = "code_snippets"
-	supportedLanguagesTable = "supported_languages"
 )
 
 type Config struct {
@@ -26,6 +18,12 @@ type Config struct {
 func NewSQLServer(cfg Config) (*gorm.DB, error) {
 	dsn := fmt.Sprintf("sqlserver://%s:%s@%s:%s?database=%s", cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.DatabaseName)
 	sqlServer, err := gorm.Open(sqlserver.Open(dsn), &gorm.Config{})
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = sqlServer.AutoMigrate(&models.User{}, &models.Role{}, &models.RoleClaim{}, &models.SupportedLanguage{}, &models.CodeSnippet{}, &models.RefreshToken{})
 
 	if err != nil {
 		return nil, err
