@@ -35,7 +35,7 @@ func NewExecutionError(errorType ExecutionErrorType, message string) ExecutionEr
 type Response[T ErrorType] struct {
 	Success bool
 	Message string
-	Values  []interface{}
+	Values  interface{}
 	Errors  []T
 }
 
@@ -66,7 +66,7 @@ func UnauthorizedResponse(context *gin.Context, message string, errors []Executi
 	})
 }
 
-func OkResponse(context *gin.Context, message string, data []interface{}) {
+func OkResponse(context *gin.Context, message string, data interface{}) {
 	context.AbortWithStatusJSON(http.StatusOK, Response[ExecutionError]{
 		Success: true,
 		Values:  data,

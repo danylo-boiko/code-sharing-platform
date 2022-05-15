@@ -11,11 +11,8 @@ type AuthService struct {
 	sessionRepository interfaces.Session
 }
 
-func NewAuthService(authRepository interfaces.Authorization, sessionRepository interfaces.Session) *AuthService {
-	return &AuthService{
-		authRepository:    authRepository,
-		sessionRepository: sessionRepository,
-	}
+func NewAuthService(authRepository interfaces.Authorization) *AuthService {
+	return &AuthService{authRepository: authRepository}
 }
 
 func (a *AuthService) GetUser(username string) (models.User, error) {

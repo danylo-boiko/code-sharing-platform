@@ -16,12 +16,14 @@ func (h *Handler) UserIdentity(c *gin.Context) {
 	if err != nil {
 		executionError := response.NewExecutionError(response.UnauthorizedError, "Session token isn't exist")
 		response.BadRequestResponse(c, "", []response.ExecutionError{executionError})
+		return
 	}
 
 	userId, err := h.services.Session.GetUserId(sessionToken)
 	if err != nil {
-		executionError := response.NewExecutionError(response.DatabaseError, err.Error())
+		executionError := response.NewExecutionError(response.UnauthorizedError, err.Error())
 		response.BadRequestResponse(c, "", []response.ExecutionError{executionError})
+		return
 	}
 
 	c.Set(userContext, userId)

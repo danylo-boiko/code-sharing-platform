@@ -8,11 +8,13 @@ import (
 type Repository struct {
 	interfaces.Authorization
 	interfaces.Session
+	interfaces.SupportedLanguage
 }
 
 func NewRepository(mssql *gorm.DB) *Repository {
 	return &Repository{
-		Authorization: NewAuthMsSQL(mssql),
-		Session:       NewSessionMsSQL(mssql),
+		Authorization:     NewAuthMsSQL(mssql),
+		Session:           NewSessionMsSQL(mssql),
+		SupportedLanguage: NewSupportedLanguageMsSQL(mssql),
 	}
 }

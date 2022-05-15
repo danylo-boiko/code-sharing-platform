@@ -8,11 +8,13 @@ import (
 type Service struct {
 	interfaces.Authorization
 	interfaces.Session
+	interfaces.SupportedLanguage
 }
 
 func NewService(repository *repositories.Repository) *Service {
 	return &Service{
-		Authorization: NewAuthService(repository.Authorization, repository.Session),
-		Session:       NewSessionService(repository.Session),
+		Authorization:     NewAuthService(repository.Authorization),
+		Session:           NewSessionService(repository.Session),
+		SupportedLanguage: NewSupportedLanguageService(repository.SupportedLanguage),
 	}
 }
