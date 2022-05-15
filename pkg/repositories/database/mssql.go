@@ -1,7 +1,6 @@
 package database
 
 import (
-	"code-sharing-platform/pkg/models"
 	"fmt"
 	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
@@ -23,7 +22,7 @@ func NewSQLServer(cfg Config) (*gorm.DB, error) {
 		return nil, err
 	}
 
-	err = mssql.AutoMigrate(models.User{}, models.Role{}, models.RoleClaim{}, models.SupportedLanguage{}, models.CodeSnippet{}, models.Session{})
+	//err = mssql.AutoMigrate(models.User{}, models.Role{}, models.RoleClaim{}, models.SupportedLanguage{}, models.CodeSnippet{}, models.Session{})
 
 	if err != nil {
 		return nil, err

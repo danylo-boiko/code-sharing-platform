@@ -22,5 +22,22 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		auth.POST("/sign-up", h.SignUp)
 	}
 
+	/*api := router.Group("/api")
+	{
+		supportedLanguages := api.Group("/supported_languages")
+		{
+			supportedLanguages.GET("/")
+		}
+
+		codeSnippets := api.Group("/code_snippets")
+		{
+			codeSnippets.GET("/")
+			codeSnippets.GET("/:id")
+			codeSnippets.POST("/")
+			codeSnippets.PUT("/:id")
+			codeSnippets.DELETE("/:id")
+		}
+	}*/
+
 	return router
 }

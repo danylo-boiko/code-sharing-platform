@@ -18,7 +18,7 @@ import (
 func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 
-	if err := initConfig(); err != nil {
+	if err := InitConfig(); err != nil {
 		logrus.Fatalf("Error initializing configs: %s", err.Error())
 	}
 
@@ -62,7 +62,7 @@ func main() {
 	}
 }
 
-func initConfig() error {
+func InitConfig() error {
 	viper.AddConfigPath("configs")
 	viper.SetConfigName("config")
 	return viper.ReadInConfig()

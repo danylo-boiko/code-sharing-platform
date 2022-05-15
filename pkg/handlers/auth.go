@@ -5,65 +5,73 @@ import (
 	"code-sharing-platform/pkg/models"
 	"code-sharing-platform/pkg/requests/auth"
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 	"time"
 )
 
 func (h *Handler) SignIn(c *gin.Context) {
 	var signInRequest auth.SignInRequest
 	if err := c.ShouldBind(&signInRequest); err != nil {
-		response.BadRequestValidationErrors(c, err)
+		response.BadRequestValidationResponse(c, err)
 		return
 	}
 
-	sessionToken, expireDate, err := h.services.Authorization.CreateSessionToken(signInRequest.Username, signInRequest.Password)
-
+	user, err := h.services.Authorization.GetUser(signInRequest.Username)
 	if err != nil {
-		response.BadRequest(c, "Error occurred while creating new session token", []response.ErrorDetail{{
-			ErrorType:    response.DatabaseError,
-			ErrorMessage: err.Error(),
-		}})
+		executionError := response.NewExecutionError(response.IncorrectDataError, "User with this username isn't exist")
+		response.UnauthorizedResponse(c, "", []response.ExecutionError{executionError})
 		return
 	}
 
-	maxTokenAge := int(expireDate.Sub(time.Now().UTC()).Seconds())
+	if isPasswordCorrect := h.services.Authorization.IsPasswordCorrect(signInRequest.Password, user.PasswordHash); !isPasswordCorrect {
+		executionError := response.NewExecutionError(response.IncorrectDataError, "Provided wrong password")
+		response.UnauthorizedResponse(c, "", []response.ExecutionError{executionError})
+		return
+	}
 
-	c.SetCookie("code_sharing_platform", sessionToken, maxTokenAge, "/", "localhost", false, true)
+	session, err := h.services.Session.CreateSession(user.Id)
+	if err != nil {
+		executionError := response.NewExecutionError(response.DatabaseError, err.Error())
+		response.UnauthorizedResponse(c, "", []response.ExecutionError{executionError})
+		return
+	}
 
-	response.OkRequest(c, "User signed in successfully", nil)
+	SaveTokenToCookie(c, session.Token, session.ExpiryDate)
+
+	response.OkResponse(c, "User signed in successfully", nil)
 }
 
 func (h *Handler) SignUp(c *gin.Context) {
 	var signUpRequest auth.SignUpRequest
 	if err := c.ShouldBind(&signUpRequest); err != nil {
-		response.BadRequestValidationErrors(c, err)
+		response.BadRequestValidationResponse(c, err)
 		return
 	}
 
-	_, err := h.services.Authorization.CreateUser(models.User{
+	userId, err := h.services.Authorization.CreateUser(models.User{
 		Username:     signUpRequest.Username,
 		Email:        signUpRequest.Email,
 		PasswordHash: h.services.Authorization.HashPassword(signUpRequest.Password),
 	})
 	if err != nil {
-		response.BadRequest(c, "Error occurred while creating new user", []response.ErrorDetail{{
-			ErrorType:    response.DatabaseError,
-			ErrorMessage: err.Error(),
-		}})
+		executionError := response.NewExecutionError(response.DatabaseError, err.Error())
+		response.BadRequestResponse(c, "", []response.ExecutionError{executionError})
 		return
 	}
 
-	sessionToken, expireDate, err := h.services.Authorization.CreateSessionToken(signUpRequest.Username, signUpRequest.Password)
+	session, err := h.services.Session.CreateSession(userId)
 	if err != nil {
-		response.BadRequest(c, "Error occurred while creating new session token", []response.ErrorDetail{{
-			ErrorType:    response.DatabaseError,
-			ErrorMessage: err.Error(),
-		}})
+		executionError := response.NewExecutionError(response.DatabaseError, err.Error())
+		response.BadRequestResponse(c, "", []response.ExecutionError{executionError})
 		return
 	}
 
+	SaveTokenToCookie(c, session.Token, session.ExpiryDate)
+
+	response.OkResponse(c, "User signed up successfully", nil)
+}
+
+func SaveTokenToCookie(c *gin.Context, token string, expireDate time.Time) {
 	maxTokenAge := int(expireDate.Sub(time.Now().UTC()).Seconds())
-
-	c.SetCookie("code_sharing_platform", sessionToken, maxTokenAge, "/", "localhost", false, true)
-
-	response.OkRequest(c, "User signed up successfully", nil)
+	c.SetCookie(codeSharingPlatformCookie, token, maxTokenAge, "/", viper.GetString("app.domain"), false, true)
 }

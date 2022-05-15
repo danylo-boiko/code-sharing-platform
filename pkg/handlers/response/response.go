@@ -8,53 +8,68 @@ import (
 	"net/http"
 )
 
-type ErrorType string
+type ErrorType interface {
+	ExecutionError | pkg.ValidationError
+}
+
+type ExecutionErrorType string
 
 const (
-	Error             ErrorType = "Error"
-	DatabaseError     ErrorType = "Database error"
-	ValidationError   ErrorType = "Validation error"
-	UnauthorizedError ErrorType = "Unauthorized"
+	DatabaseError      ExecutionErrorType = "database_error"
+	IncorrectDataError                    = "incorrect_data_error"
+	UnauthorizedError                     = "unauthorized"
 )
 
-type ErrorDetail struct {
-	ErrorType    ErrorType
-	ErrorMessage string
+type ExecutionError struct {
+	ErrorType ExecutionErrorType
+	Message   string
 }
 
-type Response struct {
+func NewExecutionError(errorType ExecutionErrorType, message string) ExecutionError {
+	return ExecutionError{
+		ErrorType: errorType,
+		Message:   message,
+	}
+}
+
+type Response[T ErrorType] struct {
 	Success bool
-	Value   []interface{}
 	Message string
-	Errors  []ErrorDetail
+	Values  []interface{}
+	Errors  []T
 }
 
-func BadRequest(context *gin.Context, message string, errors []ErrorDetail) {
-	context.AbortWithStatusJSON(http.StatusBadRequest, Response{
+func BadRequestResponse(context *gin.Context, message string, errors []ExecutionError) {
+	context.AbortWithStatusJSON(http.StatusBadRequest, Response[ExecutionError]{
 		Success: false,
 		Errors:  errors,
 		Message: message,
 	})
 }
 
-func BadRequestValidationErrors(context *gin.Context, err error) {
+func BadRequestValidationResponse(context *gin.Context, err error) {
 	var validationErrors validator.ValidationErrors
 	if errors.As(err, &validationErrors) {
-		handledErrors := make([]ErrorDetail, len(validationErrors))
-		for i, message := range pkg.GetValidationErrorsMessages(validationErrors) {
-			handledErrors[i] = ErrorDetail{
-				ErrorType:    ValidationError,
-				ErrorMessage: message,
-			}
-		}
-		BadRequest(context, "Fields validation errors", handledErrors)
+		handledErrors := pkg.GetValidationErrors(validationErrors)
+		context.AbortWithStatusJSON(http.StatusBadRequest, Response[pkg.ValidationError]{
+			Success: false,
+			Errors:  handledErrors,
+		})
 	}
 }
 
-func OkRequest(context *gin.Context, message string, data []interface{}) {
-	context.AbortWithStatusJSON(http.StatusOK, Response{
+func UnauthorizedResponse(context *gin.Context, message string, errors []ExecutionError) {
+	context.AbortWithStatusJSON(http.StatusUnauthorized, Response[ExecutionError]{
+		Success: false,
+		Errors:  errors,
+		Message: message,
+	})
+}
+
+func OkResponse(context *gin.Context, message string, data []interface{}) {
+	context.AbortWithStatusJSON(http.StatusOK, Response[ExecutionError]{
 		Success: true,
-		Value:   data,
+		Values:  data,
 		Message: message,
 	})
 }

@@ -1,30 +1,36 @@
 package pkg
 
 import (
-	"fmt"
 	"github.com/go-playground/validator/v10"
 	"github.com/gobeam/stringy"
 )
 
+type ValidationError struct {
+	Field        string
+	ErrorMessage string
+}
+
 func GetErrorMessage(fieldError validator.FieldError) string {
-	field := stringy.New(fieldError.Field()).SnakeCase().ToLower()
 	switch fieldError.Tag() {
 	case "required":
-		return fmt.Sprintf("'%s'is required", field)
+		return "This field is required"
 	case "max":
-		return fmt.Sprintf("'%s' should be less or equal than %s", field, fieldError.Param())
+		return "Should be less or equal than " + fieldError.Param()
 	case "min":
-		return fmt.Sprintf("'%s' should be greater or equal than %s", field, fieldError.Param())
+		return "Should be greater or equal than " + fieldError.Param()
 	case "email":
-		return fmt.Sprintf("'%s' should be in email format", field)
+		return "Should be in email format"
 	}
 	return "Unknown error"
 }
 
-func GetValidationErrorsMessages(validationErrors validator.ValidationErrors) []string {
-	out := make([]string, len(validationErrors))
-	for i, fieldError := range validationErrors {
-		out[i] = GetErrorMessage(fieldError)
+func GetValidationErrors(validationErrors validator.ValidationErrors) []ValidationError {
+	out := make([]ValidationError, len(validationErrors))
+	for idx, fieldError := range validationErrors {
+		out[idx] = ValidationError{
+			Field:        stringy.New(fieldError.Field()).SnakeCase().ToLower(),
+			ErrorMessage: GetErrorMessage(fieldError),
+		}
 	}
 	return out
 }

@@ -1,5 +1,7 @@
 app:
+  domain: "localhost"
   port: "8000"
+  tokenTTL: 24 #hours
 
 mssql:
   host: "localhost"
