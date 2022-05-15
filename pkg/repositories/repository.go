@@ -1,19 +1,18 @@
 package repositories
 
 import (
-	"code-sharing-platform/pkg/models"
+	"code-sharing-platform/pkg/repositories/interfaces"
 	"gorm.io/gorm"
 )
 
-type Authorization interface {
-	SignIn(username string, password string) (models.User, error)
-	SignUp(user *models.User) (int, error)
-}
-
 type Repository struct {
-	Authorization
+	interfaces.Authorization
+	interfaces.Session
 }
 
-func NewRepository(sqlServer *gorm.DB) *Repository {
-	return &Repository{}
+func NewRepository(mssql *gorm.DB) *Repository {
+	return &Repository{
+		Authorization: NewAuthMsSQL(mssql),
+		Session:       NewSessionMsSQL(mssql),
+	}
 }

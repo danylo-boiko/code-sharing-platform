@@ -26,7 +26,7 @@ func main() {
 		logrus.Fatalf("Error loading env variables: %s", err.Error())
 	}
 
-	sqlServer, err := database.NewSQLServer(database.Config{
+	mssql, err := database.NewSQLServer(database.Config{
 		Host:         viper.GetString("mssql.host"),
 		Port:         viper.GetString("mssql.port"),
 		Username:     viper.GetString("mssql.username"),
@@ -38,7 +38,7 @@ func main() {
 		logrus.Fatalf("Failed to initialize db: %s", err.Error())
 	}
 
-	repositories := repositories.NewRepository(sqlServer)
+	repositories := repositories.NewRepository(mssql)
 	services := services.NewService(repositories)
 	handlers := handlers.NewHandler(services)
 

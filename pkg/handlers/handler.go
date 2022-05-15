@@ -20,7 +20,6 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	{
 		auth.POST("/sign-in", h.SignIn)
 		auth.POST("/sign-up", h.SignUp)
-		auth.POST("/refresh-access-token", h.RefreshAccessToken)
 	}
 
 	return router
