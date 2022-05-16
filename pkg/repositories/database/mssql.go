@@ -18,8 +18,8 @@ type Config struct {
 }
 
 func NewSQLServer(cfg Config) (*gorm.DB, error) {
-	dsn := fmt.Sprintf("sqlserver://%s:%s@%s:%s?database=%s", cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.DatabaseName)
-	mssql, err := gorm.Open(sqlserver.Open(dsn), &gorm.Config{})
+	connectionStr := fmt.Sprintf("sqlserver://%s:%s@%s:%s?database=%s", cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.DatabaseName)
+	mssql, err := gorm.Open(sqlserver.Open(connectionStr), &gorm.Config{})
 	if err != nil {
 		return nil, err
 	}

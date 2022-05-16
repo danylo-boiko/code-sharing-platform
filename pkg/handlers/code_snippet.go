@@ -5,4 +5,5 @@ import (
 )
 
 func (h *Handler) CreateCodeSnippet(c *gin.Context) {
+	OkResponse(c, "ok", nil)
 }

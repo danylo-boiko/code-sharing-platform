@@ -1,7 +1,6 @@
-package response
+package handlers
 
 import (
-	"code-sharing-platform/pkg"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -9,7 +8,7 @@ import (
 )
 
 type ErrorType interface {
-	ExecutionError | pkg.ValidationError
+	ExecutionError | ValidationError
 }
 
 type ExecutionErrorType string
@@ -17,6 +16,7 @@ type ExecutionErrorType string
 const (
 	DatabaseError      ExecutionErrorType = "database_error"
 	IncorrectDataError                    = "incorrect_data_error"
+	PermissionError                       = "permission_error"
 	UnauthorizedError                     = "unauthorized"
 )
 
@@ -50,8 +50,8 @@ func BadRequestResponse(context *gin.Context, message string, errors []Execution
 func BadRequestValidationResponse(context *gin.Context, err error) {
 	var validationErrors validator.ValidationErrors
 	if errors.As(err, &validationErrors) {
-		handledErrors := pkg.GetValidationErrors(validationErrors)
-		context.AbortWithStatusJSON(http.StatusBadRequest, Response[pkg.ValidationError]{
+		handledErrors := GetValidationErrors(validationErrors)
+		context.AbortWithStatusJSON(http.StatusBadRequest, Response[ValidationError]{
 			Success: false,
 			Errors:  handledErrors,
 		})
