@@ -27,3 +27,10 @@ func (s *SessionMsSQL) CreateSession(session models.Session) (int, error) {
 	}
 	return session.Id, nil
 }
+
+func (s *SessionMsSQL) UpdateSession(session models.Session) error {
+	if err := s.mssql.Save(&session).Error; err != nil {
+		return err
+	}
+	return nil
+}

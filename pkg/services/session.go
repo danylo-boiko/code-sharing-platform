@@ -41,3 +41,18 @@ func (s *SessionService) CreateSession(userId int) (models.Session, error) {
 
 	return session, nil
 }
+
+func (s *SessionService) ExtendExpireDate(sessionToken string) (time.Time, error) {
+	session, err := s.sessionRepository.GetSession(sessionToken)
+	if err != nil {
+		return time.Time{}, err
+	}
+
+	expireDate := time.Now().UTC().Add(time.Duration(viper.GetInt("app.tokenTTL")) * time.Hour)
+	session.ExpiryDate = expireDate
+	if err := s.sessionRepository.UpdateSession(session); err != nil {
+		return time.Time{}, err
+	}
+
+	return expireDate, nil
+}

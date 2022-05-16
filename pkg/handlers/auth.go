@@ -5,8 +5,6 @@ import (
 	"code-sharing-platform/pkg/models"
 	"code-sharing-platform/pkg/requests/auth"
 	"github.com/gin-gonic/gin"
-	"github.com/spf13/viper"
-	"time"
 )
 
 func (h *Handler) SignIn(c *gin.Context) {
@@ -69,9 +67,4 @@ func (h *Handler) SignUp(c *gin.Context) {
 	SaveTokenToCookie(c, session.Token, session.ExpiryDate)
 
 	response.OkResponse(c, "User signed up successfully", nil)
-}
-
-func SaveTokenToCookie(c *gin.Context, token string, expireDate time.Time) {
-	maxTokenAge := int(expireDate.Sub(time.Now().UTC()).Seconds())
-	c.SetCookie(codeSharingPlatformCookie, token, maxTokenAge, "/", viper.GetString("app.domain"), false, true)
 }

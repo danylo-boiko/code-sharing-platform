@@ -24,7 +24,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 	api := router.Group("/api", h.UserIdentity)
 	{
-		supportedLanguages := api.Group("/supported_languages")
+		supportedLanguages := api.Group("/supported-languages")
 		{
 			supportedLanguages.GET("/", h.GetSupportedLanguages)
 		}
