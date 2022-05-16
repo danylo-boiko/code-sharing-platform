@@ -21,9 +21,15 @@ func (h *Handler) UserIdentity(c *gin.Context) {
 		return
 	}
 
-	userId, err := h.services.Session.GetUserId(sessionToken)
+	session, err := h.services.Session.GetSession(sessionToken)
 	if err != nil {
 		executionError := response.NewExecutionError(response.UnauthorizedError, err.Error())
+		response.BadRequestResponse(c, "", []response.ExecutionError{executionError})
+		return
+	}
+
+	if session.ExpiryDate.Before(time.Now().UTC()) {
+		executionError := response.NewExecutionError(response.UnauthorizedError, "Session token no longer valid, sign in again")
 		response.BadRequestResponse(c, "", []response.ExecutionError{executionError})
 		return
 	}
@@ -37,7 +43,7 @@ func (h *Handler) UserIdentity(c *gin.Context) {
 
 	SaveTokenToCookie(c, sessionToken, expireDate)
 
-	c.Set(userContext, userId)
+	c.Set(userContext, session.UserId)
 }
 
 func SaveTokenToCookie(c *gin.Context, token string, expireDate time.Time) {

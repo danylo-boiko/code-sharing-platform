@@ -24,6 +24,10 @@ func (s *SessionService) GetUserId(sessionToken string) (int, error) {
 	return session.UserId, nil
 }
 
+func (s *SessionService) GetSession(sessionToken string) (models.Session, error) {
+	return s.sessionRepository.GetSession(sessionToken)
+}
+
 func (s *SessionService) CreateSession(userId int) (models.Session, error) {
 	sessionToken := uuid.NewString()
 	expireDate := time.Now().UTC().Add(time.Duration(viper.GetInt("app.tokenTTL")) * time.Hour)
