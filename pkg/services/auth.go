@@ -15,8 +15,12 @@ func NewAuthService(authRepository interfaces.Authorization) *AuthService {
 	return &AuthService{authRepository: authRepository}
 }
 
-func (a *AuthService) GetUser(username string) (models.User, error) {
-	return a.authRepository.GetUser(username)
+func (a *AuthService) GetUserById(id int) (models.User, error) {
+	return a.authRepository.GetUserById(id)
+}
+
+func (a *AuthService) GetUserByUsername(username string) (models.User, error) {
+	return a.authRepository.GetUserByUsername(username)
 }
 
 func (a *AuthService) CreateUser(user models.User) (int, error) {

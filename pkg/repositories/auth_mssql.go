@@ -13,7 +13,15 @@ func NewAuthMsSQL(mssql *gorm.DB) *AuthMsSql {
 	return &AuthMsSql{mssql: mssql}
 }
 
-func (a *AuthMsSql) GetUser(username string) (models.User, error) {
+func (a *AuthMsSql) GetUserById(id int) (models.User, error) {
+	var user models.User
+	if err := a.mssql.First(&user, id).Error; err != nil {
+		return user, err
+	}
+	return user, nil
+}
+
+func (a *AuthMsSql) GetUserByUsername(username string) (models.User, error) {
 	var user models.User
 	if err := a.mssql.First(&user, "username = ?", username).Error; err != nil {
 		return user, err

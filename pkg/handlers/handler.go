@@ -28,6 +28,11 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		{
 			supportedLanguages.GET("/", h.GetSupportedLanguages)
 		}
+
+		codeSnippets := api.Group("/code-snippets")
+		{
+			codeSnippets.POST("/", h.CreateCodeSnippet)
+		}
 	}
 
 	return router

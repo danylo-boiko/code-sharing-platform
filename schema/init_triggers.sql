@@ -1,4 +1,4 @@
-create trigger session_expiry_date_update
+create or alter trigger session_expiry_date_update
     on sessions
     after update
 as

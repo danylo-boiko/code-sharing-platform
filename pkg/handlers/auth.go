@@ -14,7 +14,7 @@ func (h *Handler) SignIn(c *gin.Context) {
 		return
 	}
 
-	user, err := h.services.Authorization.GetUser(signInRequest.Username)
+	user, err := h.services.Authorization.GetUserByUsername(signInRequest.Username)
 	if err != nil {
 		executionError := response.NewExecutionError(response.IncorrectDataError, "User with this username isn't exist")
 		response.UnauthorizedResponse(c, "", []response.ExecutionError{executionError})

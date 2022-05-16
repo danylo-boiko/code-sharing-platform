@@ -5,7 +5,8 @@ import (
 )
 
 type Authorization interface {
-	GetUser(username string) (models.User, error)
+	GetUserById(id int) (models.User, error)
+	GetUserByUsername(username string) (models.User, error)
 	CreateUser(user models.User) (int, error)
 	HashPassword(password string) string
 	IsPasswordCorrect(password, hash string) bool
