@@ -1,5 +1,12 @@
 package models
 
+type UserRoleType string
+
+const (
+	DefaultUserRole UserRoleType = "default"
+	AdminUserRole                = "admin"
+)
+
 type Role struct {
 	Id          int         `gorm:"type:int; primaryKey; not null; autoIncrement;"`
 	Title       string      `gorm:"type:varchar(50); not null; unique;"`

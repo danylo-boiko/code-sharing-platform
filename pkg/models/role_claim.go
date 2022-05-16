@@ -1,5 +1,21 @@
 package models
 
+type RoleClaimType string
+
+const (
+	OwnedRoleClaim   RoleClaimType = "owned"
+	ForeignRoleClaim               = "foreign"
+)
+
+type ActionType string
+
+const (
+	ReadAction   ActionType = "read"
+	CreateAction            = "create"
+	UpdateAction            = "update"
+	DeleteAction            = "delete"
+)
+
 type RoleClaim struct {
 	Id         int    `gorm:"type:int; primaryKey; not null; autoIncrement;"`
 	RoleId     int    `gorm:"type:int; not null;"`
