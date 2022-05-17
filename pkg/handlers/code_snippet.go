@@ -59,7 +59,22 @@ func (h *Handler) CreateCodeSnippet(c *gin.Context) {
 		return
 	}
 
-	OkResponse(c, "mock", nil)
+	userId, _ := GetUserId(c)
+	permissionErr := h.services.Role.CheckUserPermission(userId, models.OwnedRoleClaim, models.CreateAction)
+	if permissionErr != nil {
+		executionError := NewExecutionError(PermissionError, permissionErr.Error())
+		UnauthorizedResponse(c, "", []ExecutionError{executionError})
+		return
+	}
+
+	codeSnippetId, err := h.services.CodeSnippet.CreateCodeSnippet(userId, createCodeSnippetRequest)
+	if err != nil {
+		executionError := NewExecutionError(DatabaseError, err.Error())
+		BadRequestResponse(c, "", []ExecutionError{executionError})
+		return
+	}
+
+	OkResponse(c, "Code snippet created successfully", codeSnippetId)
 }
 
 func (h *Handler) UpdateCodeSnippet(c *gin.Context) {
@@ -76,7 +91,28 @@ func (h *Handler) UpdateCodeSnippet(c *gin.Context) {
 		return
 	}
 
-	OkResponse(c, "mock", codeSnippetId)
+	codeSnippet, err := h.services.CodeSnippet.GetCodeSnippet(codeSnippetId)
+	if err != nil {
+		executionError := NewExecutionError(IncorrectDataError, "Code snippet with this id isn't exist")
+		BadRequestResponse(c, "", []ExecutionError{executionError})
+		return
+	}
+
+	userId, _ := GetUserId(c)
+	permissionErr := h.services.Role.CheckUserPermission(userId, GetUserRoleClaim(userId, codeSnippet.UserId), models.DeleteAction)
+	if permissionErr != nil {
+		executionError := NewExecutionError(PermissionError, permissionErr.Error())
+		UnauthorizedResponse(c, "", []ExecutionError{executionError})
+		return
+	}
+
+	if err := h.services.CodeSnippet.UpdateCodeSnippet(codeSnippet.Id, updateCodeSnippetRequest); err != nil {
+		executionError := NewExecutionError(DatabaseError, err.Error())
+		BadRequestResponse(c, "", []ExecutionError{executionError})
+		return
+	}
+
+	OkResponse(c, "Code snippet updated successfully", nil)
 }
 
 func (h *Handler) DeleteCodeSnippet(c *gin.Context) {
@@ -95,9 +131,9 @@ func (h *Handler) DeleteCodeSnippet(c *gin.Context) {
 	}
 
 	userId, _ := GetUserId(c)
-	err = h.services.Role.CheckUserPermission(userId, GetUserRoleClaim(userId, codeSnippet.UserId), models.DeleteAction)
-	if err != nil {
-		executionError := NewExecutionError(PermissionError, err.Error())
+	permissionErr := h.services.Role.CheckUserPermission(userId, GetUserRoleClaim(userId, codeSnippet.UserId), models.DeleteAction)
+	if permissionErr != nil {
+		executionError := NewExecutionError(PermissionError, permissionErr.Error())
 		UnauthorizedResponse(c, "", []ExecutionError{executionError})
 		return
 	}

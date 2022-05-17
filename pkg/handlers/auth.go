@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"code-sharing-platform/pkg/models"
 	"code-sharing-platform/pkg/requests/auth"
 	"github.com/gin-gonic/gin"
 )
@@ -45,11 +44,7 @@ func (h *Handler) SignUp(c *gin.Context) {
 		return
 	}
 
-	userId, err := h.services.Authorization.CreateUser(models.User{
-		Username:     signUpRequest.Username,
-		Email:        signUpRequest.Email,
-		PasswordHash: h.services.Authorization.HashPassword(signUpRequest.Password),
-	})
+	userId, err := h.services.Authorization.CreateUser(signUpRequest)
 	if err != nil {
 		executionError := NewExecutionError(DatabaseError, err.Error())
 		BadRequestResponse(c, "", []ExecutionError{executionError})

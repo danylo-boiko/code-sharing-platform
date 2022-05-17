@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"code-sharing-platform/pkg/models"
+	"errors"
 	"gorm.io/gorm"
 )
 
@@ -18,6 +19,10 @@ func (r *RoleMsSQL) GetUserRoles(userId int) ([]models.Role, error) {
 	err := r.mssql.Table("users_roles").Select("role_id").Where("user_id = ?", userId).Scan(&rolesIds).Error
 	if err != nil {
 		return nil, err
+	}
+
+	if len(rolesIds) == 0 {
+		return nil, errors.New("user doesn't have any roles")
 	}
 
 	var userRoles []models.Role

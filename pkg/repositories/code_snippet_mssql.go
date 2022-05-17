@@ -21,8 +21,15 @@ func (c *CodeSnippetMsSQL) GetCodeSnippet(id int) (models.CodeSnippet, error) {
 	return codeSnippet, nil
 }
 
-func (s *CodeSnippetMsSQL) UpdateCodeSnippet(codeSnippet models.CodeSnippet) error {
-	if err := s.mssql.Save(&codeSnippet).Error; err != nil {
+func (c *CodeSnippetMsSQL) CreateCodeSnippet(codeSnippet models.CodeSnippet) (int, error) {
+	if err := c.mssql.Create(&codeSnippet).Error; err != nil {
+		return codeSnippet.Id, err
+	}
+	return codeSnippet.Id, nil
+}
+
+func (c *CodeSnippetMsSQL) UpdateCodeSnippet(codeSnippet models.CodeSnippet) error {
+	if err := c.mssql.Save(&codeSnippet).Error; err != nil {
 		return err
 	}
 	return nil
