@@ -13,5 +13,5 @@ type CodeSnippet struct {
 	CreatedAt  time.Time         `gorm:"type:datetime2; not null;"`
 	ExpiryDate time.Time         `gorm:"type:datetime2;"`
 	ViewsLimit int               `gorm:"type:int; check:views_limit>=0;"`
-	Views      int               `gorm:"type:int; not null; default=0; check:views>=0;"`
+	Views      int               `gorm:"type:int; not null; default:0; check:views>=0;"`
 }

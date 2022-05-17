@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"code-sharing-platform/pkg/models"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
@@ -45,6 +46,13 @@ func (h *Handler) UserIdentity(c *gin.Context) {
 	c.Set(userContext, session.UserId)
 }
 
+func (h *Handler) AnonymousUserIdentity(c *gin.Context) {
+	_, err := c.Cookie(codeSharingPlatformCookie)
+	if err == nil {
+		h.UserIdentity(c)
+	}
+}
+
 func SaveTokenToCookie(c *gin.Context, token string, expireDate time.Time) {
 	maxTokenAge := int(expireDate.Sub(time.Now().UTC()).Seconds())
 	c.SetCookie(codeSharingPlatformCookie, token, maxTokenAge, "/", viper.GetString("app.domain"), false, true)
@@ -62,4 +70,11 @@ func GetUserId(c *gin.Context) (int, error) {
 	}
 
 	return idInt, nil
+}
+
+func GetUserRoleClaim(userId, ownerId int) models.RoleClaimType {
+	if userId == ownerId {
+		return models.OwnedRoleClaim
+	}
+	return models.ForeignRoleClaim
 }

@@ -5,15 +5,15 @@ import (
 	"gorm.io/gorm"
 )
 
-type AuthMsSql struct {
+type AuthMsSQL struct {
 	mssql *gorm.DB
 }
 
-func NewAuthMsSQL(mssql *gorm.DB) *AuthMsSql {
-	return &AuthMsSql{mssql: mssql}
+func NewAuthMsSQL(mssql *gorm.DB) *AuthMsSQL {
+	return &AuthMsSQL{mssql: mssql}
 }
 
-func (a *AuthMsSql) GetUserById(id int) (models.User, error) {
+func (a *AuthMsSQL) GetUserById(id int) (models.User, error) {
 	var user models.User
 	if err := a.mssql.First(&user, id).Error; err != nil {
 		return user, err
@@ -21,7 +21,7 @@ func (a *AuthMsSql) GetUserById(id int) (models.User, error) {
 	return user, nil
 }
 
-func (a *AuthMsSql) GetUserByUsername(username string) (models.User, error) {
+func (a *AuthMsSQL) GetUserByUsername(username string) (models.User, error) {
 	var user models.User
 	if err := a.mssql.First(&user, "username = ?", username).Error; err != nil {
 		return user, err
@@ -29,7 +29,7 @@ func (a *AuthMsSql) GetUserByUsername(username string) (models.User, error) {
 	return user, nil
 }
 
-func (a *AuthMsSql) CreateUser(user models.User) (int, error) {
+func (a *AuthMsSQL) CreateUser(user models.User) (int, error) {
 	if err := a.mssql.Create(&user).Error; err != nil {
 		return user.Id, err
 	}

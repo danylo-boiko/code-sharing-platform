@@ -14,10 +14,11 @@ type ErrorType interface {
 type ExecutionErrorType string
 
 const (
-	DatabaseError      ExecutionErrorType = "database_error"
-	IncorrectDataError                    = "incorrect_data_error"
-	PermissionError                       = "permission_error"
-	UnauthorizedError                     = "unauthorized"
+	DatabaseError        ExecutionErrorType = "database_error"
+	UnavailableDataError                    = "unavailable_data_error"
+	IncorrectDataError                      = "incorrect_data_error"
+	PermissionError                         = "permission_error"
+	UnauthorizedError                       = "unauthorized"
 )
 
 type ExecutionError struct {
