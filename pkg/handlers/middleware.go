@@ -53,11 +53,6 @@ func (h *Handler) AnonymousUserIdentity(c *gin.Context) {
 	}
 }
 
-func SaveTokenToCookie(c *gin.Context, token string, expireDate time.Time) {
-	maxTokenAge := int(expireDate.Sub(time.Now().UTC()).Seconds())
-	c.SetCookie(codeSharingPlatformCookie, token, maxTokenAge, "/", viper.GetString("app.domain"), false, true)
-}
-
 func GetUserId(c *gin.Context) (int, error) {
 	id, ok := c.Get(userContext)
 	if !ok {
@@ -77,4 +72,9 @@ func GetUserRoleClaim(userId, ownerId int) models.RoleClaimType {
 		return models.OwnedRoleClaim
 	}
 	return models.ForeignRoleClaim
+}
+
+func SaveTokenToCookie(c *gin.Context, token string, expireDate time.Time) {
+	maxTokenAge := int(expireDate.Sub(time.Now().UTC()).Seconds())
+	c.SetCookie(codeSharingPlatformCookie, token, maxTokenAge, "/", viper.GetString("app.domain"), false, true)
 }

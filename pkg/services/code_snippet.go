@@ -53,7 +53,7 @@ func (c *CodeSnippetService) CreateCodeSnippet(userId int, request code_snippet.
 	codeSnippet.Header = request.Header
 	codeSnippet.Code = request.Code
 	if !request.ExpiryDate.IsZero() {
-		codeSnippet.ExpiryDate = request.ExpiryDate
+		codeSnippet.ExpiryDate = request.ExpiryDate.UTC()
 	}
 	if request.ViewsLimit != 0 {
 		codeSnippet.ViewsLimit = request.ViewsLimit
@@ -83,7 +83,7 @@ func (c *CodeSnippetService) UpdateCodeSnippet(id int, request code_snippet.Upda
 		codeSnippet.Code = request.Code
 	}
 	if !request.ExpiryDate.IsZero() {
-		codeSnippet.ExpiryDate = request.ExpiryDate
+		codeSnippet.ExpiryDate = request.ExpiryDate.UTC()
 	}
 	if request.ViewsLimit != 0 {
 		codeSnippet.ViewsLimit = request.ViewsLimit

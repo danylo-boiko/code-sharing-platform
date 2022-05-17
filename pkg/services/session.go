@@ -35,7 +35,7 @@ func (s *SessionService) CreateSession(userId int) (models.Session, error) {
 	session := models.Session{
 		UserId:     userId,
 		Token:      sessionToken,
-		CreatedAt:  time.Now(),
+		CreatedAt:  time.Now().UTC(),
 		ExpiryDate: expireDate,
 	}
 

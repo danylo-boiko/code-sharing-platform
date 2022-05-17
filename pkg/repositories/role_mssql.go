@@ -31,3 +31,11 @@ func (r *RoleMsSQL) GetUserRoles(userId int) ([]models.Role, error) {
 	}
 	return userRoles, nil
 }
+
+func (r *RoleMsSQL) GetRole(roleType models.UserRoleType) (models.Role, error) {
+	var role models.Role
+	if err := r.mssql.First(&role, "title = ?", roleType).Error; err != nil {
+		return models.Role{}, err
+	}
+	return role, nil
+}
