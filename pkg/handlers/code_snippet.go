@@ -5,6 +5,7 @@ import (
 	"code-sharing-platform/pkg/requests/code_snippet"
 	"github.com/gin-gonic/gin"
 	"strconv"
+	"time"
 )
 
 // @Tags Code Snippets
@@ -69,7 +70,13 @@ func (h *Handler) GetCodeSnippetById(c *gin.Context) {
 func (h *Handler) CreateCodeSnippet(c *gin.Context) {
 	var createCodeSnippetRequest code_snippet.CreateCodeSnippetRequest
 	if err := c.ShouldBind(&createCodeSnippetRequest); err != nil {
-		BadRequestValidationResponse(c, err)
+		switch err.(type) {
+		case *time.ParseError:
+			executionError := NewExecutionError(IncorrectDataError, "Dates should using format '2006-01-02T15:04:05Z'")
+			BadRequestResponse(c, "", []ExecutionError{executionError})
+		default:
+			BadRequestValidationResponse(c, err)
+		}
 		return
 	}
 
@@ -109,8 +116,13 @@ func (h *Handler) UpdateCodeSnippet(c *gin.Context) {
 
 	var updateCodeSnippetRequest code_snippet.UpdateCodeSnippetRequest
 	if err := c.ShouldBind(&updateCodeSnippetRequest); err != nil {
-		BadRequestValidationResponse(c, err)
-		return
+		switch err.(type) {
+		case *time.ParseError:
+			executionError := NewExecutionError(IncorrectDataError, "Dates should using format '2006-01-02T15:04:05Z'")
+			BadRequestResponse(c, "", []ExecutionError{executionError})
+		default:
+			BadRequestValidationResponse(c, err)
+		}
 	}
 
 	codeSnippet, err := h.services.CodeSnippet.GetCodeSnippet(codeSnippetId)
