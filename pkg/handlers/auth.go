@@ -5,6 +5,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param input body auth.SignInRequest true "credentials"
+// @Success 200 {object} Response
+// @Failure 400,401 {object} Response
+// @Router /auth/sign-in [post]
 func (h *Handler) SignIn(c *gin.Context) {
 	var signInRequest auth.SignInRequest
 	if err := c.ShouldBind(&signInRequest); err != nil {
@@ -37,6 +44,13 @@ func (h *Handler) SignIn(c *gin.Context) {
 	OkResponse(c, "User signed in successfully", nil)
 }
 
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param input body auth.SignUpRequest true "credentials"
+// @Success 200 {object} Response
+// @Failure 400,401 {object} Response
+// @Router /auth/sign-up [post]
 func (h *Handler) SignUp(c *gin.Context) {
 	var signUpRequest auth.SignUpRequest
 	if err := c.ShouldBind(&signUpRequest); err != nil {

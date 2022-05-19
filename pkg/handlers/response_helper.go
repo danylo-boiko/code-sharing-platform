@@ -33,15 +33,15 @@ func NewExecutionError(errorType ExecutionErrorType, message string) ExecutionEr
 	}
 }
 
-type Response[T ErrorType] struct {
+type Response struct {
 	Success bool
 	Message string
 	Values  interface{}
-	Errors  []T
+	Errors  interface{}
 }
 
 func BadRequestResponse(context *gin.Context, message string, errors []ExecutionError) {
-	context.AbortWithStatusJSON(http.StatusBadRequest, Response[ExecutionError]{
+	context.AbortWithStatusJSON(http.StatusBadRequest, Response{
 		Success: false,
 		Errors:  errors,
 		Message: message,
@@ -52,7 +52,7 @@ func BadRequestValidationResponse(context *gin.Context, err error) {
 	var validationErrors validator.ValidationErrors
 	if errors.As(err, &validationErrors) {
 		handledErrors := GetValidationErrors(validationErrors)
-		context.AbortWithStatusJSON(http.StatusBadRequest, Response[ValidationError]{
+		context.AbortWithStatusJSON(http.StatusBadRequest, Response{
 			Success: false,
 			Errors:  handledErrors,
 		})
@@ -60,7 +60,7 @@ func BadRequestValidationResponse(context *gin.Context, err error) {
 }
 
 func UnauthorizedResponse(context *gin.Context, message string, errors []ExecutionError) {
-	context.AbortWithStatusJSON(http.StatusUnauthorized, Response[ExecutionError]{
+	context.AbortWithStatusJSON(http.StatusUnauthorized, Response{
 		Success: false,
 		Errors:  errors,
 		Message: message,
@@ -68,7 +68,7 @@ func UnauthorizedResponse(context *gin.Context, message string, errors []Executi
 }
 
 func OkResponse(context *gin.Context, message string, data interface{}) {
-	context.AbortWithStatusJSON(http.StatusOK, Response[ExecutionError]{
+	context.AbortWithStatusJSON(http.StatusOK, Response{
 		Success: true,
 		Values:  data,
 		Message: message,

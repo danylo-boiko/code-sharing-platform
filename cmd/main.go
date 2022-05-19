@@ -15,6 +15,11 @@ import (
 	"syscall"
 )
 
+// @title Code Sharing Platform
+// @version 1.0
+
+// @host localhost:8000
+// @BasePath /
 func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 

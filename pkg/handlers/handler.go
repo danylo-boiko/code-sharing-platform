@@ -1,8 +1,13 @@
 package handlers
 
 import (
+	_ "code-sharing-platform/docs"
 	"code-sharing-platform/pkg/services"
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
+	"github.com/swaggo/files"
+	"github.com/swaggo/gin-swagger"
 )
 
 type Handler struct {
@@ -17,6 +22,9 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.New()
 
 	router.Use(CORSMiddleware())
+
+	swaggerUrl := ginSwagger.URL(fmt.Sprintf("http://%s:%s/swagger/doc.json", viper.GetString("app.domain"), viper.GetString("app.port")))
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, swaggerUrl))
 
 	auth := router.Group("/auth")
 	{

@@ -1,0 +1,219 @@
+basePath: /
+definitions:
+  auth.SignInRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  auth.SignUpRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    - password
+    - username
+    type: object
+  code_snippet.CreateCodeSnippetRequest:
+    properties:
+      code:
+        type: string
+      expiry_date:
+        type: string
+      header:
+        type: string
+      language_id:
+        type: integer
+      views_limit:
+        type: integer
+    required:
+    - code
+    - header
+    - language_id
+    type: object
+  code_snippet.UpdateCodeSnippetRequest:
+    properties:
+      code:
+        type: string
+      expiry_date:
+        type: string
+      header:
+        type: string
+      language_id:
+        type: integer
+      views_limit:
+        type: integer
+    type: object
+  handlers.Response:
+    properties:
+      errors:
+        type: object
+      message:
+        type: string
+      success:
+        type: boolean
+      values:
+        type: object
+    type: object
+host: localhost:8000
+info:
+  contact: {}
+  license: {}
+  title: Code Sharing Platform
+  version: "1.0"
+paths:
+  /api/code-snippets:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Request boby
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/code_snippet.CreateCodeSnippetRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handlers.Response'
+      tags:
+      - Code Snippets
+  /api/code-snippets/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Required
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handlers.Response'
+      tags:
+      - Code Snippets
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Required
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handlers.Response'
+      tags:
+      - Code Snippets
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Required
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Request boby
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/code_snippet.UpdateCodeSnippetRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handlers.Response'
+      tags:
+      - Code Snippets
+  /auth/sign-in:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: credentials
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/auth.SignInRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handlers.Response'
+      tags:
+      - Auth
+  /auth/sign-up:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: credentials
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/auth.SignUpRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handlers.Response'
+      tags:
+      - Auth
+swagger: "2.0"

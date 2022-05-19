@@ -7,6 +7,13 @@ import (
 	"strconv"
 )
 
+// @Tags Code Snippets
+// @Param id path int true "Required"
+// @Accept json
+// @Produce json
+// @Success 200 {object} Response
+// @Failure 400,401 {object} Response
+// @Router /api/code-snippets/{id} [get]
 func (h *Handler) GetCodeSnippetById(c *gin.Context) {
 	codeSnippetId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -52,6 +59,13 @@ func (h *Handler) GetCodeSnippetById(c *gin.Context) {
 	OkResponse(c, "", codeSnippet)
 }
 
+// @Tags Code Snippets
+// @Accept json
+// @Produce json
+// @Param input body code_snippet.CreateCodeSnippetRequest true "Request boby"
+// @Success 200 {object} Response
+// @Failure 400,401 {object} Response
+// @Router /api/code-snippets [post]
 func (h *Handler) CreateCodeSnippet(c *gin.Context) {
 	var createCodeSnippetRequest code_snippet.CreateCodeSnippetRequest
 	if err := c.ShouldBind(&createCodeSnippetRequest); err != nil {
@@ -77,6 +91,14 @@ func (h *Handler) CreateCodeSnippet(c *gin.Context) {
 	OkResponse(c, "Code snippet created successfully", codeSnippetId)
 }
 
+// @Tags Code Snippets
+// @Param id path int true "Required"
+// @Param input body code_snippet.UpdateCodeSnippetRequest true "Request boby"
+// @Accept json
+// @Produce json
+// @Success 200 {object} Response
+// @Failure 400,401 {object} Response
+// @Router /api/code-snippets/{id} [put]
 func (h *Handler) UpdateCodeSnippet(c *gin.Context) {
 	codeSnippetId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -115,6 +137,13 @@ func (h *Handler) UpdateCodeSnippet(c *gin.Context) {
 	OkResponse(c, "Code snippet updated successfully", nil)
 }
 
+// @Tags Code Snippets
+// @Param id path int true "Required"
+// @Accept json
+// @Produce json
+// @Success 200 {object} Response
+// @Failure 400,401 {object} Response
+// @Router /api/code-snippets/{id} [delete]
 func (h *Handler) DeleteCodeSnippet(c *gin.Context) {
 	codeSnippetId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
