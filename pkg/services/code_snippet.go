@@ -22,20 +22,18 @@ func (c *CodeSnippetService) GetCodeSnippet(id int) (models.CodeSnippet, error) 
 
 func (c *CodeSnippetService) IsExpiryDateEnded(codeSnippet models.CodeSnippet) (bool, error) {
 	if !codeSnippet.ExpiryDate.IsZero() {
-		if codeSnippet.ExpiryDate.After(time.Now().UTC()) {
-			return false, nil
+		if codeSnippet.ExpiryDate.Before(time.Now().UTC()) {
+			return true, errors.New("code snippet expiry date is ended")
 		}
-		return true, errors.New("code snippet expiry date is ended")
 	}
 	return false, nil
 }
 
 func (c *CodeSnippetService) IsViewsLimitReached(codeSnippet models.CodeSnippet) (bool, error) {
 	if codeSnippet.ViewsLimit > 0 {
-		if codeSnippet.Views < codeSnippet.ViewsLimit {
-			return false, nil
+		if codeSnippet.Views == codeSnippet.ViewsLimit {
+			return true, errors.New("views limit reached")
 		}
-		return true, errors.New("views limit reached")
 	}
 	return false, nil
 }

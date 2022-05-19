@@ -15,7 +15,7 @@ func NewCodeSnippetMsSQL(mssql *gorm.DB) *CodeSnippetMsSQL {
 
 func (c *CodeSnippetMsSQL) GetCodeSnippet(id int) (models.CodeSnippet, error) {
 	var codeSnippet models.CodeSnippet
-	if err := c.mssql.First(&codeSnippet, id).Error; err != nil {
+	if err := c.mssql.Preload("Language").First(&codeSnippet, id).Error; err != nil {
 		return codeSnippet, err
 	}
 	return codeSnippet, nil
