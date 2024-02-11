@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/viper"
 	"github.com/swaggo/files"
 	"github.com/swaggo/gin-swagger"
+	"os"
 )
 
 type Handler struct {
@@ -23,7 +24,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 	router.Use(CORSMiddleware())
 
-	swaggerUrl := ginSwagger.URL(fmt.Sprintf("http://%s:%s/swagger/doc.json", viper.GetString("app.domain"), viper.GetString("app.port")))
+	swaggerUrl := ginSwagger.URL(fmt.Sprintf("http://%s:%s/swagger/doc.json", os.Getenv("APP_DOMAIN"), viper.GetString("app.port")))
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, swaggerUrl))
 
 	auth := router.Group("/auth")

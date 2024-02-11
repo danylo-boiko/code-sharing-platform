@@ -3,8 +3,12 @@ definitions:
   auth.SignInRequest:
     properties:
       password:
+        maxLength: 32
+        minLength: 3
         type: string
       username:
+        maxLength: 32
+        minLength: 3
         type: string
     required:
     - password
@@ -13,10 +17,15 @@ definitions:
   auth.SignUpRequest:
     properties:
       email:
+        maxLength: 50
         type: string
       password:
+        maxLength: 32
+        minLength: 3
         type: string
       username:
+        maxLength: 32
+        minLength: 3
         type: string
     required:
     - email
@@ -30,10 +39,13 @@ definitions:
       expiry_date:
         type: string
       header:
+        maxLength: 50
+        minLength: 3
         type: string
       language_id:
         type: integer
       views_limit:
+        minimum: 1
         type: integer
     required:
     - code
@@ -47,27 +59,27 @@ definitions:
       expiry_date:
         type: string
       header:
+        maxLength: 50
+        minLength: 3
         type: string
       language_id:
         type: integer
       views_limit:
+        minimum: 1
         type: integer
     type: object
   handlers.Response:
     properties:
-      errors:
-        type: object
+      errors: {}
       message:
         type: string
       success:
         type: boolean
-      values:
-        type: object
+      values: {}
     type: object
-host: localhost:8000
+host: localhost:8080
 info:
   contact: {}
-  license: {}
   title: Code Sharing Platform
   version: "1.0"
 paths:
@@ -87,6 +99,10 @@ paths:
       responses:
         "200":
           description: OK
+          schema:
+            $ref: '#/definitions/handlers.Response'
+        "400":
+          description: Bad Request
           schema:
             $ref: '#/definitions/handlers.Response'
         "401":
@@ -112,6 +128,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/handlers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.Response'
         "401":
           description: Unauthorized
           schema:
@@ -132,6 +152,10 @@ paths:
       responses:
         "200":
           description: OK
+          schema:
+            $ref: '#/definitions/handlers.Response'
+        "400":
+          description: Bad Request
           schema:
             $ref: '#/definitions/handlers.Response'
         "401":
@@ -162,6 +186,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/handlers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.Response'
         "401":
           description: Unauthorized
           schema:
@@ -186,6 +214,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/handlers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.Response'
         "401":
           description: Unauthorized
           schema:
@@ -208,6 +240,10 @@ paths:
       responses:
         "200":
           description: OK
+          schema:
+            $ref: '#/definitions/handlers.Response'
+        "400":
+          description: Bad Request
           schema:
             $ref: '#/definitions/handlers.Response'
         "401":

@@ -18,7 +18,7 @@ import (
 // @title Code Sharing Platform
 // @version 1.0
 
-// @host localhost:8000
+// @host localhost:8080
 // @BasePath /
 func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
@@ -32,7 +32,7 @@ func main() {
 	}
 
 	mssql, err := database.NewSQLServer(database.Config{
-		Host:         viper.GetString("mssql.host"),
+		Host:         os.Getenv("SQL_SERVER_HOST"),
 		Port:         viper.GetString("mssql.port"),
 		Username:     viper.GetString("mssql.username"),
 		Password:     os.Getenv("SQL_SERVER_PASSWORD"),

@@ -1,10 +1,8 @@
 app:
-  domain: "localhost"
-  port: "8000"
+  port: "8080"
   tokenTTL: 24 #hours
 
 mssql:
-  host: "localhost"
   port: "1433"
-  username: "code-sharing"
+  username: "danylo"
   databasename: "code-sharing-platform"
